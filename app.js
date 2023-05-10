@@ -20,11 +20,13 @@ app.get("/", welcome);
 // const movieHandlers = require("./movieHandlers");
 const userHandlers = require("./userHandlers")
 
+// app.delete("/api/movies/:id", movieHandlers.deleteMovie)
 // app.put("/api/movies/:id", movieHandlers.updateMovie)
 // app.post("/api/movies", movieHandlers.postMovie)
 // app.get("/api/movies", movieHandlers.getMovies);
 // app.get("/api/movies/:id", movieHandlers.getMovieById);
 
+app.delete("/api/users/:id", userHandlers.deleteUser)
 app.put("/api/users/:id", userHandlers.updateUser)
 app.post("/api/users", userHandlers.postUser)
 app.get("/api/users", userHandlers.getUsers)
