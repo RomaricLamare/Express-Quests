@@ -30,7 +30,7 @@ const getUsers = (req, res) => {
     const id = parseInt(req.params.id);
   
     database
-      .query("select firstname, lastname, email, city, language  from users where id = ?", [id])
+      .query("select firstname, lastname, email, city, language from users where id = ?", [id])
       .then(([users]) => {
         if (users[0] != null) {
           res.status(200).json(users[0]);
@@ -43,6 +43,27 @@ const getUsers = (req, res) => {
           res.status(500).send("Error retrieving data from database")
   });
 }
+
+const getUserByEmailWithPasswordAndPassToNext = (req, res, next) => {
+
+  const { email } = req.body;
+
+  database
+    .query("select * from users where email = ?", [email])
+    .then(([users]) => {
+      if (users[0] != null) {
+        req.user = users[0];
+
+        next();
+      } else {
+        res.sendStatus(401);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error retrieving data from database");
+    });
+};
 
   const postUser = (req, res) => {
     const { firstname, lastname, email, city, language, hashedPassword } = req.body;
@@ -60,6 +81,14 @@ const getUsers = (req, res) => {
       res.status(500).send("Error saving the user");
     });
   };
+
+  // const isItDwight = (req, res) => {
+  //   if (req.body.email === "dwight@theoffice.com" && req.body.password === "123456") {
+  //     res.send("Credentials are valid")
+  //   } else {
+  //     res.sendStatus(401)
+  //   }
+  //   }
 
   const updateUser = (req, res) => {
     const id= parseInt(req.params.id);
@@ -108,4 +137,6 @@ const getUsers = (req, res) => {
     postUser,
     updateUser,
     deleteUser,
+    getUserByEmailWithPasswordAndPassToNext,
+    // isItDwight
   };
